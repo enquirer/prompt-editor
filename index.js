@@ -4,45 +4,40 @@
 
 var util = require('util');
 var ExternalEditor = require('external-editor');
-var BasePrompt = require('enquirer-prompt');
-var log = require('log-utils');
+var Prompt = require('prompt-base');
+var red = require('ansi-red');
+var dim = require('ansi-dim');
 
 /**
  * Constructor
  */
 
-function Prompt() {
-  return BasePrompt.apply(this, arguments);
+function Editor(/*question, answers, rl*/) {
+  return Prompt.apply(this, arguments);
 }
 
 /**
- * Inherit `BasePrompt`
+ * Inherit `Prompt`
  */
 
-util.inherits(Prompt, BasePrompt);
+util.inherits(Editor, Prompt);
 
 /**
  * Start the prompt session
  * @param  {Function} `cb` Callback when prompt is finished
- * @return {Object} Returns the `Prompt` instance
+ * @return {Object} Returns the `Editor` instance
  */
 
-Prompt.prototype.ask = function(cb) {
+Editor.prototype.ask = function(cb) {
   this.callback = cb;
-  var self = this;
 
-  this.ui.once('line', function(e) {
-    self.onSubmit({value: self.startExternalEditor(e)});
-  });
-
+  this.ui.once('line', this.onSubmit.bind(this));
   this.ui.on('keypress', this.render.bind(this, null));
-  this.ui.on('error', this.onError.bind(this));
+  this.on('error', this.onError.bind(this));
 
   // Prevents default from being printed on terminal (can look weird with multiple lines)
   this.currentText = this.question.default;
   this.question.default = null;
-
-  // Init
   this.render();
   return this;
 };
@@ -51,46 +46,54 @@ Prompt.prototype.ask = function(cb) {
  * Render the prompt to terminal
  */
 
-Prompt.prototype.render = function(error) {
+Editor.prototype.render = function(error) {
   var append = '';
   var message = this.message;
 
   if (this.status === 'answered') {
-    message += log.dim('Received');
+    message += dim('Received');
   } else {
-    message += log.dim('Press <enter> to launch your preferred editor.');
+    message += dim('Press <enter> to launch your preferred editor.');
   }
 
   if (error) {
-    append = log.red('>> ') + error;
+    append = red('>> ') + error;
   }
 
   this.ui.render(message, append);
 };
 
 /**
- * Launch $EDITOR on user press enter
+ * Launch $EDITOR when the user presses `enter`
  */
 
-Prompt.prototype.startExternalEditor = function() {
+Editor.prototype.startExternalEditor = function() {
   this.currentText = ExternalEditor.edit(this.currentText);
   return this.currentText;
 };
 
-Prompt.prototype.onSubmit = function(state) {
-  this.answer = state.value;
-  this.status = 'answered';
-  this.render();
-  this.ui.write();
-  this.callback(this.answer);
+/**
+ * When the answer is submitted (user presses `enter` key), re-render
+ * and pass answer to callback.
+ * @param {Object} `event`
+ */
+
+Editor.prototype.onSubmit = function(event) {
+  this.answer = this.startExternalEditor(event);
+  this.submitAnswer();
 };
 
-Prompt.prototype.onError = function(state) {
-  this.render(state.isValid);
+/**
+ * Handle error events
+ * @param {Object} `event`
+ */
+
+Editor.prototype.onError = function(event) {
+  this.render(event.isValid);
 };
 
 /**
  * Module exports
  */
 
-module.exports = Prompt;
+module.exports = Editor;
