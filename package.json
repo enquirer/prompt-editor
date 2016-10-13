@@ -1,18 +1,16 @@
 {
-  "name": "enquirer-prompt-editor",
-  "description": "Editor prompt plugin for Enquirer.",
+  "name": "prompt-editor",
+  "description": "Editor prompt. Opens your text editor and waits for you to save your input during a prompt. Can be used standalone or with a prompt system like [Enquirer].",
   "version": "0.1.0",
-  "homepage": "https://github.com/jonschlinkert/enquirer-prompt-editor",
+  "homepage": "https://github.com/enquirer/prompt-editor",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
-  "repository": "jonschlinkert/enquirer-prompt-editor",
+  "repository": "enquirer/prompt-editor",
   "bugs": {
-    "url": "https://github.com/jonschlinkert/enquirer-prompt-editor/issues"
+    "url": "https://github.com/enquirer/prompt-editor/issues"
   },
   "license": "MIT",
   "files": [
-    "index.js",
-    "LICENSE",
-    "README.md"
+    "index.js"
   ],
   "main": "index.js",
   "engines": {
@@ -21,6 +19,16 @@
   "scripts": {
     "test": "mocha"
   },
+  "dependencies": {
+    "ansi-dim": "^0.1.1",
+    "ansi-red": "^0.1.1",
+    "external-editor": "^1.1.0",
+    "prompt-base": "^0.5.0"
+  },
+  "devDependencies": {
+    "enquirer": "^0.3.1",
+    "gulp-format-md": "^0.1.11"
+  },
   "keywords": [
     "answer",
     "answers",
@@ -28,8 +36,8 @@
     "checkbox",
     "choice",
     "cli",
-    "editor",
     "command",
+    "editor",
     "enquirerprompt",
     "input",
     "inquire",
@@ -47,5 +55,44 @@
     "terminal",
     "tty",
     "ui"
-  ]
+  ],
+  "verb": {
+    "toc": false,
+    "layout": "common-minimal",
+    "data": {
+      "alias": "editor"
+    },
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "related": {
+      "list": [
+        "enquirer",
+        "prompt-choices",
+        "prompt-question",
+        "readline-utils"
+      ],
+      "prompts": [
+        "prompt-checkbox",
+        "prompt-confirm",
+        "prompt-editor",
+        "prompt-expand",
+        "prompt-list",
+        "prompt-password",
+        "prompt-radio",
+        "prompt-rawlist"
+      ]
+    },
+    "reflinks": [
+      "enquirer",
+      "verb",
+      "verb-generate-readme"
+    ],
+    "lint": {
+      "reflinks": true
+    }
+  }
 }
