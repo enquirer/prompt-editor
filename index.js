@@ -80,7 +80,7 @@ Editor.prototype.startExternalEditor = function() {
 
 Editor.prototype.onSubmit = function(event) {
   this.answer = this.startExternalEditor(event);
-  this.submitAnswer();
+  this.submitAnswer(this.answer);
 };
 
 /**
